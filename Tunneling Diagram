@@ -1,0 +1,35 @@
+user1                 user2                 user3                 user4                 user5                 user6             
+computer 1            computer 2            computer 3            computer 4            computer 5            computer 6           
+192.168.1.21          192.168.1.22          192.168.1.23          192.168.1.24          192.168.1.25          192.168.1.26         
+port 22               port 22               port 22               port 22               port 23               port 22             
++==============+      +==============+      +==============+      +==============+      +==============+      +==============+    
+|              |      |              |      |              |      |              |      |              |      |              |    
+|          (1) ------->22            |      |              |      |              |      |              |      |              |      
+|     (2) :1111>=====================------->:22           |      |              |      |              |      |              |    
+|   (4.1) :2222>============================================------>22            |      |              |      |              |     
+|              |      |              |      |              |      |              ------->:23 (4.2)     |      |              |     
+|              |      |              |      |              |      |           :22<-------              |      |              |     
+|     (5) :4444>===========================================================:3333>=======<:23 (4.3)     |      |              |    
+|     (6) :5555>========================================================================================------>:22           |     
+|              |      |              |      |              |      |              |      |              |      |              |      
++==============+      +==============+      +==============+      +==============+      +==============+      +==============+      
+
+   (1) #connect to 2 from 1
+ssh user2@192.168.1.22 -L 1111:192.168.1.23:22
+  (2) #establish forwarding tunnel on 2 to get access to 3
+ssh -p 1111 user3@localhost -L 2222:192.168.1.23:22
+  (3) #establish forwarding tunnel on 3 to get to 4
+ssh -p 2222 user4@localhost
+  (4) #computer 5 isnt running ssh so we need to get on there and redirect their port 23 to one of ours
+  (4.1) # first, we need to set a dynamic session on computer 4
+ssh -p 2222 -D user@localhost
+  (4.2) #now we telnet onto computer 5
+telnet 192.168.1.24
+  (4.3) #now we establish a reverse tunnel and bind 3333 to computer 5's port 23
+ssh user4@192.168.1.4 -R 3333:localhost:23
+  (5) #now we connect a forward to the reverse we just set up, giving us an ssh onto computer 5
+ssh -p 2222 user@localhost -L 4444:localhost:3333
+  (6) #to get access to computer 6, we set up another forward
+ssh -p 4444 user6@localhost -L 5555:192.168.1.26:22
+  (7) #get on the last box
+ssh -p user6@localhost
