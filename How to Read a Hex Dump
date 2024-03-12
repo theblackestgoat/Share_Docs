@@ -1,0 +1,16 @@
+How to read a DNS request hex dump
+
+       DST                SRC           IPV4     Version   
+00 86 9c e7 55 14 | d4 be d9 4c 11 9e | 08 00 | 45  00
+
+ Len     IP4ID   Flag   TTL  Prot  ChkSm      SrcIP      DstIP
+00  42 | d6 45 | 40 00 | 40 | 11 | bd 6d | c1 18 e3 e6 | 01 01
+
+        SrcPt   DstIP    Len    ChkSm  DNSID    Flags     ?s
+01 01 | b9 cf | 00 35 | 00 2e | a7 40 | 4c b2 | 01 00 | 00 01 |
+
+Answer  Auth    Addtn   C    k  e  y  s  e  r  v  e  r 
+00 00 | 00 00 | 00 00 | 09 | 6b 65 79 73 65 72 76 65 72 |
+
+C    u  b  u  n  t  u     C   c  o  m         Aname   Internet
+06 | 75 62 75 6e 74 75 | 03 | 63 6f 6d | 00 | 00 01 | 00 01
